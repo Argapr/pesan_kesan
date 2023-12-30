@@ -25,7 +25,7 @@
         .svg2 {
             width: 900px;
             height: auto;
-            margin-left: 11 50px;
+            margin-left: 1150px;
             margin-top: -150px;
             rotate: 150deg;
         }
@@ -42,8 +42,54 @@
             width: 150px;
             height: 50px;
             border: 0;
-            outline: 0;
+            outline: none;
             border-radius: 10px; 
+        }
+        .dsk {
+            font-size: 12px;
+            color: #4a4a4c;
+            margin-top: 330px;
+        }
+        @media (max-width: 575.98px) {
+            /* Android Styles */
+            .dsk {
+            font-size: 12px;
+            color: #4a4a4c;
+            margin-top: 300px;
+        }
+            h3 {
+                padding-top: 80px;
+            }
+            .back{
+                position: absolute;
+                margin-top: 30px;
+                margin-left: 15px;
+                z-index: 10000;
+                position: fixed;
+                width: 170px;
+                height: 39px;
+            }
+            .svg1 {
+                margin-left: -20px;
+                margin-top: -170px;
+                width: 350px;
+                height: auto;
+                display: none
+            }
+            .svg2 {
+                rotate: 280deg;
+                margin-left: -200px;
+                margin-top: 400px;
+                width: 700px;
+                height: auto;
+                display: none;
+            }
+            .container {
+                padding-top: 20px;
+            }
+            form {
+                margin: 20px;
+            }
         }
     </style>
 </head>
@@ -56,32 +102,44 @@
 
 
     <h3 class="text-center" style="color: #638ECB;">hallo selamat datang di diary 2023</h3>
-    <p class="text-center" style="color: #638ECB">kamu bisa berbagi cerita kesan kamu di 2023 dan harapan kamu di tahun 2024 loh <br>dengan mengisi form di bawah ini</p>
+    <p class="text-center" style="color: #638ECB">kamu bisa berbagi cerita kesan kamu di 2023 dan harapan kamu di tahun 2024 loh dengan mengisi form di bawah ini.</p>
 
     
 <div class="container d-flex align-items-center justify-content-center" style="margin-top: 230px;">
     
-    <form method="POST" action="/pesan/store" class="position-absolute top-50 start-50 translate-middle">
-        @csrf
-        <div class="mb-3">
-            <label for="pesanKesan" class="form-label" style="color: #333841;">Pesan dan Kesan</label>
-            <textarea class="form-control" name="pesan_kesan" id="pesanKesan" cols="100" rows="3" placeholder="Pesan dan Kesan kamu untuk 2023" maxlength="100"></textarea>
-            <small class="form-text text-muted" id="pesanKesanCount">0 / 100</small>
-        </div>
-        <div class="mb-3">
-            <label for="harapan" class="form-label" style="color: #333841;">Harapan</label>
-            <textarea class="form-control" name="harapan" id="harapan" cols="100" rows="3" placeholder="Harapan kamu di tahun 2024" maxlength="100"></textarea>
-            <small class="form-text text-muted" id="harapanCount">0 / 100</small>
-        </div>
-        
-        <button type="submit" style="background-color: #638ECB;"><i class='bx bx-message-rounded-check' style='color:#f0f3fa'></i><span style="color: #F0F3FA; margin-left: 5px;">kirim jawaban</span></button>    
-    </form>
+    <form method="POST" action="/pesan/store" class="position-absolute top-50 start-50 translate-middle" onsubmit="return validateForm()">
+    @csrf
+    <div class="mb-3">
+        <label for="pesanKesan" class="form-label" style="color: #333841;">Pesan dan Kesan</label>
+        <textarea class="form-control" name="pesan_kesan" id="pesanKesan" cols="100" rows="3" placeholder="Pesan dan Kesan kamu untuk 2023" maxlength="100"></textarea>
+        <small class="form-text text-muted" id="pesanKesanCount">0 / 100</small>
+    </div>
+    <div class="mb-3">
+        <label for="harapan" class="form-label" style="color: #333841;">Harapan</label>
+        <textarea class="form-control" name="harapan" id="harapan" cols="100" rows="3" placeholder="Harapan kamu di tahun 2024" maxlength="100"></textarea>
+        <small class="form-text text-muted" id="harapanCount">0 / 100</small>
+    </div>        
+    <button type="submit" style="background-color: #638ECB;"><i class='bx bx-message-rounded-check' style='color:#f0f3fa'></i><span style="color: #F0F3FA; margin-left: 5px;">kirim pesan</span></button>    
+</form>
 </div>
+
+<p class="text-center dsk">Pesan anda dapat dilihat oleh semua orang di saluran ini.</p>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
+    function validateForm() {
+        var pesanKesan = document.getElementById("pesanKesan").value;
+        var harapan = document.getElementById("harapan").value;
+
+        if (pesanKesan.trim() === "" || harapan.trim() === "") {
+            alert("Kolom harus diisi!");
+            return false; // Menahan pengiriman formulir jika ada kolom yang belum diisi
+        }
+
+        return true; // Mengizinkan pengiriman formulir jika semua kolom telah diisi
+    }
     // Menambahkan fungsi untuk menghitung karakter pada textarea dan menampilkan pemberitahuan
     $(document).ready(function () {
         $('#pesanKesan').on('input', function () {

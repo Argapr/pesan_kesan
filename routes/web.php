@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PesanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ Route::get('/', function () {
 Route::get('/pesan',[PesanController::class,'index']);
 Route::get('/pesan/create',[PesanController::class,'create']);
 Route::post('/pesan/store',[PesanController::class,'store']);
+// File: routes/web.php or routes/api.php
+Route::post('/react/{type}/{id}', [ReactionController::class, 'react']);

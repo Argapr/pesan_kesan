@@ -12,17 +12,24 @@
         .reactions {
             display: flex;
             justify-content: space-around;
-            margin-bottom: -10px;
+            margin-bottom: -5px;
         }
 
         .reaction-btn {
             cursor: pointer;
-            font-size: 15px; /* Sesuaikan ukuran font sesuai kebutuhan */
+            font-size: 15px;
+            padding-left: 3px;
+            width: 40px;
+            height: 25px;
+            background-color: #f0f3fa;
+            border-radius: 5px; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .like-count, .love-count {
             color: #333841;
             font-size: 12px;
+            margin-left: 3px;
         }
 
         body {
@@ -110,14 +117,15 @@
                         <p style="color: #7999c7; font-size: 12px; margin-bottom: -5px;">harapan</p>
                         <p style="color: #333841; font-size: 14px;">{{$w->harapan}}</p>
                     </div>
+                    <!-- ... (bagian sebelumnya tetap sama) -->
                     <div class="reactions">
-                        <div class="reaction-btn" onclick="react('like', {{$w->id}})">👍</div>
-                        <div class="reaction-btn" onclick="react('love', {{$w->id}})">❤️</div>
+                        <div class="reaction-btn" onclick="react('like', {{$w->id}})">👍<span class="like-count" id="like-count-{{$w->id}}">{{$w->like_count}}</span>
+                        </div>
+                        <div class="reaction-btn" onclick="react('love', {{$w->id}})">❤️<span class="love-count" id="love-count-{{$w->id}}">{{$w->love_count}}</span>
+                        </div>
                     </div>
-                    {{-- <div class="reaction-counts">
-                        <span class="like-count">Likes: {{$w->like_count}}</span>
-                        <span class="love-count">Loves: {{$w->love_count}}</span>
-                    </div> --}}
+                        
+                    <!-- ... (bagian setelahnya tetap sama) -->
                 </div>
             </div>
             @endforeach
@@ -128,6 +136,54 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    const clickedEmojis = {};
+
+    function react(type, id) {
+        const emojiElement = document.getElementById(`${type}-emoji-${id}`);
+        const countElement = document.getElementById(`${type}-count-${id}`);
+
+        if (!clickedEmojis[id]) {
+            // Simpan reaksi ke server
+            const url = `/react/${type}/${id}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update jumlah like atau love di tampilan
+                    const currentCount = parseInt(countElement.innerText);
+                    countElement.innerText = currentCount + 1;
+
+                    // Tandai bahwa pengguna telah mengklik
+                    clickedEmojis[id] = true;
+                } else {
+                    console.error('Gagal menyimpan reaksi ke server.');
+                }
+            });
+        } else {
+            // Jika emoji sudah diklik, Anda dapat mengimplementasikan logika pengurangan nilai di sini
+            // ...
+
+            // Atau mengganti nilai langsung di tampilan
+            const currentCount = parseInt(countElement.innerText);
+            countElement.innerText = Math.max(0, currentCount - 1);
+
+            // Tandai bahwa pengguna dapat mengklik lagi
+            clickedEmojis[id] = false;
+        }
+    }
+</script>
+ 
+
+
 
 </body>
 </html>
